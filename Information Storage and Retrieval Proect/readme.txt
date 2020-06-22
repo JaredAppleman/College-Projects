@@ -2,6 +2,7 @@ Author: Jared Appleman
 Class: Information Storage and Retrieval
 Professor: Josh Carroll
 
+Language: Python
 
 Description of project:
 Gathers all of shakespears pieces from http://shakespeare.mit.edu. It creates a local file for each piece, a bigram index, and a term index. 
