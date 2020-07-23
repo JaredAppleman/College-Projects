@@ -1,0 +1,87 @@
+GET INFORMATION
+
+Scenario: need a list of all the texts in the library (books,magazines,periodicals...)
+SQL: select title from Text;
+
+Scenario: need a list of all the books
+SQL: select title from Text where textType = 'book';
+
+Scenario: need a list of all the books that are available to be rented
+SQL: select title from (Rentals natural join Text) where availability = 'true';
+
+Scenario: need a list of all the authors you have books for
+SQL: select DISTINCT author from Text;
+
+Scenario: need a list of all the books from author 'x'    //in this case, author = 'alexandra bracken
+SQL: select title from Text where author = 'Alexandra Bracken';
+
+Scenario: get a list of the all the art pieces and their corresponding locations
+SQL: select title, location from artwork
+
+Scenario: get a list of Non-text rentals for inventory //laptops, dvd's, etc
+SQL: select * from Rentals where not type = 'book' and not type = 'periodical';
+
+Scenario: get a list of Non-rentable items in the library to show what other things the library has //art, maps, printers, computers,...
+SQL: select * from NonRentals;
+
+Scenario: get the balance for student 'x'  //me for example
+SQL w/ first name and last name: select balance from people where firstName = 'Jared' and lastName = 'Appleman';
+-or-
+SQL with catID, which is more unique: select balance from people natural join Students where catID = 525611;
+
+Scenario: Get a list of 'BOOK' rentals by person 'x' //me for example
+SQL: select title from (select rentalID from (people natural join Rented) where userID =1)as rentalNumbers natural join Text;
+
+Scenario: Look up to see how many books person 'x' is allowed to checkout //me for example
+SQL: select numOfBooks from people natural join Role where userID = 1;
+
+Scenario: Look up how many books person 'x' has already checked out //me for example
+select count(title) from (select rentalID from (people natural join Rented) where userID =1)as rentalNumbers natural join Text
+
+
+
+INSERT INFORMATION
+
+Scenario: Library gets a new book: 'x'  //inserted Warriors by Erin Hunter for example
+-need to update the 'Rentals' table and'Text' table
+SQL statements:
+insert into Rentals(rentalID, type, availability)values(16,'book','true');
+insert into Text(isbn, rentalID, title, author,publisher,year, textType, location)values(5343,16,'Warriors','Erin Hunter','Harper
+ Collins',2011,'book','AB12-Z');
+
+Scenario: Library got new painting on 3rd floor
+SQL Statements:
+insert into NonRentals(libraryID,type)values(55,'artwork');
+insert into artwork(libraryID,title,creator,artType,year,location)values(55,'The Enlightened Shadow', 'Sparky Cattington', 'paint
+ing',2019,'3rd floor lobby');
+
+Scenario: Add new user
+-if student or faculty member, have to insert into corresponding table as well
+SQL Statements:
+insert into people(userId, firstName, lastName,permissionID,role,balance)values(9,'Michael', 'Scott',1,'citizen',0);
+
+
+MODIFY INFORMATION
+
+Scenario: I checkout 'The Darkest Minds'
+-update "Rentals" at the correct tuple with the book's rentalID
+-update "Rented" with a new tuple
+SQL Statements:
+select rentalID from Text where title = 'The Darkest Minds';
+update Rentals set availability = 'false' where rentalID = 1;
+insert into Rented(rentalID,libraryID,date)values(1,1,'12-09-19');
+
+Scenario: I return 'The Darkest Minds'
+-delete tuple from 'Rented'
+-update 'Rentals'
+SQL Statements:
+update Rentals set availability = 'true' where rentalID = 1;
+delete from Rented where rentalID = 1;
+
+Scenario: Add fee to my balance
+SQL: update people set balance = balance +2 where libraryID = 1;
+
+
+
+
+I like natural join a lot. It is my favorite way of combining similar tables by using common primary/foreign keys like rentalID, userID,libraryID
