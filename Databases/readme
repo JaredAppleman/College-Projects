@@ -1,0 +1,9 @@
+These were my final deliverables for my database class project. The database is for a library. 
+
+Language: mySQL
+
+jaredapp_library: database dump of all my tables
+
+SQLstatements: a text file of a list of scenarios and methods for using my database.
+ex) Scenario: get a list of Non-text rentals for inventory //laptops, dvd's, etc
+SQL: select * from Rentals where not type = 'book' and not type = 'periodical';
